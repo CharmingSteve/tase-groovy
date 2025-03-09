@@ -35,9 +35,9 @@ pipeline {
                     Commit: ${buildInfo.commitId}
                     Branch: ${buildInfo.branch}
                     
-                    ✨ Shalom Cyberark, Yitahak and Andrey! ✨
+                    ✨ Hello Hiring Team! ✨
                     
-                    I'm Yishayahu, and I'd love to join your team!
+                    I'm Steve, and I'd love to join your team!
                     My DevOps skills include Jenkins, CI/CD pipelines,
                     Docker, and more. This artifact demonstrates
                     my ability to create automated build processes.
