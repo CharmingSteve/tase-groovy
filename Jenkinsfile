@@ -68,7 +68,42 @@ pipeline {
             steps {
                 script {
                     echo "Artifact ready for upload: artifact-${env.ARTIFACT_VERSION}.zip"
-                    echo "In a real scenario, this would be uploaded to a repository"
+                    
+                    // Add GitHub release upload with credentials
+                    withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
+                        // Create GitHub release and upload artifact
+                        sh """
+                            curl -X POST \
+                            -H "Authorization: token ${GITHUB_TOKEN}" \
+                            -H "Accept: application/vnd.github.v3+json" \
+                            -H "Content-Type: application/json" \
+                            https://api.github.com/repos/CharmingSteve/tase-groovy/releases \
+                            -d '{
+                                "tag_name": "v${env.ARTIFACT_VERSION}",
+                                "name": "Release ${env.ARTIFACT_VERSION}",
+                                "body": "Automated release from Jenkins",
+                                "draft": false,
+                                "prerelease": false
+                            }'
+                        """
+                        
+                        // Get release ID and upload asset
+                        def releaseId = sh(script: """
+                            curl -s \
+                            -H "Authorization: token ${GITHUB_TOKEN}" \
+                            -H "Accept: application/vnd.github.v3+json" \
+                            https://api.github.com/repos/CharmingSteve/tase-groovy/releases/tags/v${env.ARTIFACT_VERSION} | grep -o '"id": [0-9]*' | head -1 | cut -d' ' -f2
+                        """, returnStdout: true).trim()
+                        
+                        sh """
+                            curl -X POST \
+                            -H "Authorization: token ${GITHUB_TOKEN}" \
+                            -H "Content-Type: application/zip" \
+                            -H "Accept: application/vnd.github.v3+json" \
+                            --data-binary @artifact-${env.ARTIFACT_VERSION}.zip \
+                            "https://uploads.github.com/repos/CharmingSteve/tase-groovy/releases/${releaseId}/assets?name=artifact-${env.ARTIFACT_VERSION}.zip"
+                        """
+                    }
                     
                     // For demo purposes, we'll archive it in Jenkins
                     archiveArtifacts artifacts: "artifact-${env.ARTIFACT_VERSION}.zip", fingerprint: true
