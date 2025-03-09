@@ -31,7 +31,7 @@ pipeline {
                     Build Artifact v${env.ARTIFACT_VERSION}
                     ====================================
                     
-                    Built by: ${buildInfo.committer}
+                    Commited by: ${buildInfo.committer}
                     Commit: ${buildInfo.commitId}
                     Branch: ${buildInfo.branch}
                     
