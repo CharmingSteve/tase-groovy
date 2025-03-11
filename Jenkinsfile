@@ -35,7 +35,7 @@ pipeline {
                     Commit: ${buildInfo.commitId}
                     Branch: ${buildInfo.branch}
                     
-                    ✨ Shalom Cyberark, Yitzhak and Andrey! ✨
+                    ✨ Shalom Cyberark, Ephraim ✨
                     
                     I'm Yishayahu, and I'd love to join your team!
                     My DevOps skills include Jenkins, CI/CD pipelines,
